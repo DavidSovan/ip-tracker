@@ -1,0 +1,15 @@
+{
+  "package.json": {
+    "name": "ip-tracker",
+    "version": "1.0.0",
+    "description": "One-click IP tracker with Telegram notification",
+    "scripts": {
+      "dev": "vercel dev",
+      "deploy": "vercel --prod"
+    },
+    "dependencies": {},
+    "devDependencies": {
+      "vercel": "^32.0.0"
+    }
+  }
+}
